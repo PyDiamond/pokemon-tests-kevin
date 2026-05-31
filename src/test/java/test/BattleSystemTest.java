@@ -27,7 +27,7 @@ public class BattleSystemTest {
         Pokemon squirtle = PokemonFactory.createPokemon(7);
 
         boolean result =
-                battleSystem.playerAttackFirst(pikachu, squirtle);
+                battleSystem.playerAttacksFirst(pikachu, squirtle);
 
         assertTrue(result);
     }
@@ -43,10 +43,10 @@ public void sameSpeedShouldHaveConsistentOrder() {
     Pokemon mew2 = PokemonFactory.createPokemon(151);
 
     boolean firstResult =
-            battleSystem.playerAttackFirst(mew1, mew2);
+            battleSystem.playerAttacksFirst(mew1, mew2);
 
     boolean secondResult =
-            battleSystem.playerAttackFirst(mew1, mew2);
+            battleSystem.playerAttacksFirst(mew1, mew2);
 
     assertEquals(firstResult, secondResult);
     }

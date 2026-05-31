@@ -55,23 +55,9 @@ public class BattleSystem {
             player.showMoves();
 
             int playerMove = readOption(0, 3);
-
-            boolean playerFirst;
-
-            if (player.getSpeed() > enemy.getSpeed()) {
-
-                playerFirst = true;
-            }
-
-            else if (enemy.getSpeed() > player.getSpeed()) {
-
-                playerFirst = false;
-            }
-
-            else {
-
-                playerFirst = random.nextBoolean();
-            }
+            
+        boolean playerFirst =
+                playerAttacksFirst(player, enemy);
 
             if (playerFirst) {
 
@@ -156,5 +142,18 @@ public class BattleSystem {
 
             System.out.println("Invalid option.");
         }
+    }
+    public boolean playerAttacksFirst(Pokemon player, Pokemon enemy) {
+       if (player.getSpeed() > enemy.getSpeed()) {
+           return true;
+       }
+       
+       else if (enemy.getSpeed() > player.getSpeed()) {
+           return false;
+       }
+       
+       else {
+           return true;
+       }
     }
 }
