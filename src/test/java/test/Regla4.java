@@ -1,11 +1,8 @@
 package pokemon;
 
-import interfaces.Battleable;
-import moves.MoveCategory;
 import moves.MoveType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class Regla4 {
@@ -28,7 +25,6 @@ public class Regla4 {
     @Test
     public void testVidaNoBajaDeCeroYQuedaDerrotado() {
         int danoMasivo = 150; 
-
         defensor.receiveDamage(danoMasivo);
 
         assertEquals(0, defensor.getHp(), "El HP nunca debe ser negativo, debe quedar en 0.");
@@ -37,25 +33,34 @@ public class Regla4 {
     }
 
     @Test
+    public void testVidaLlegaExactamenteACero() {
+        int danoExacto = 50;
+        defensor.receiveDamage(danoExacto);
+
+        assertEquals(0, defensor.getHp(), "El HP debe ser exactamente 0 al recibir daño igual a la vida.");
+        assertTrue(defensor.isFainted(), "El Pokémon debe estar derrotado.");
+    }
+
+    @Test
     public void testPokemonDerrotadoNoVuelveAAtacar() {
         atacante.receiveDamage(500); 
         assertTrue(atacante.isFainted(), "El atacante debería estar muerto.");
         
         int hpDefensorAntes = defensor.getHp();
-
         atacante.useMove(1, defensor); 
 
-        assertEquals(hpDefensorAntes, defensor.getHp(), "Un Pokémon derrotado no debería causar daño.");
+        assertEquals(hpDefensorAntes, defensor.getHp(), "Un Pokémon derrotado no debería causar daño al intentar usar un movimiento.");
     }
 
     @Test
-    public void testSistemaIdentificaCorrectamenteAlGanador() {
-        
+    public void testSistemaIdentificaCorrectamenteAlGanadorYPerdedor() {
+        atacante.useMove(1, defensor);
         defensor.receiveDamage(100);
 
         assertTrue(defensor.isFainted(), "Bulbasaur debería estar derrotado.");
         assertFalse(atacante.isFainted(), "Charizard sigue en pie.");
         
-        assertTrue(atacante.isAlive(), "El sistema debe reconocer a Charizard como el único vivo (Ganador).");
+        assertTrue(atacante.isAlive(), "El sistema debe reconocer a Charizard como vivo (Ganador de la ronda).");
+        assertFalse(defensor.isAlive(), "El sistema debe reconocer a Bulbasaur como no vivo (Perdedor de la ronda).");
     }
 }
