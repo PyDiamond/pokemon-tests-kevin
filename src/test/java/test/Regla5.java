@@ -3,7 +3,6 @@ package pokemon;
 import moves.MoveType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class Regla5 {
@@ -15,6 +14,7 @@ public class Regla5 {
     }
 
     private Pokemon defensor;
+    private Pokemon atacante;
     
     private final int hpInicial = 100;
     private final int atkInicial = 55;
@@ -27,37 +27,44 @@ public class Regla5 {
     @BeforeEach
     public void setUp() {
         defensor = new PokemonPrueba(133, "Eevee", tipoInicial, hpInicial, atkInicial, defInicial, spAtkInicial, spDefInicial, spdInicial);
+        atacante = new PokemonPrueba(1, "Rattata", MoveType.NORMAL, 100, 60, 40, 30, 40, 70);
     }
 
     @Test
     public void testAtributosConstantesAlRecibirDanoFisico() {
-        int danoFisico = 80;
-
+        int danoFisico = 30;
         defensor.receiveDamage(danoFisico);
 
         assertTrue(defensor.getHp() < hpInicial, "El HP debe disminuir tras recibir daño físico.");
-
-        assertEquals(atkInicial, defensor.getAttack(), "El Ataque no debe cambiar tras un impacto.");
-        assertEquals(defInicial, defensor.getDefense(), "La Defensa no debe cambiar tras un impacto.");
-        assertEquals(spAtkInicial, defensor.getSpAttack(), "El Ataque Especial no debe cambiar tras un impacto.");
-        assertEquals(spDefInicial, defensor.getSpDefense(), "La Defensa Especial no debe cambiar tras un impacto.");
-        assertEquals(spdInicial, defensor.getSpeed(), "La Velocidad no debe cambiar tras un impacto.");
-        assertEquals(tipoInicial, defensor.getType1(), "El Tipo principal no debe cambiar.");
+        verificarAtributosConstantes(defensor);
     }
 
     @Test
     public void testAtributosConstantesAlRecibirDanoEspecial() {
-        int danoEspecial = 100;
-
+        int danoEspecial = 40;
         defensor.receiveSpecialDamage(danoEspecial);
 
         assertTrue(defensor.getHp() < hpInicial, "El HP debe disminuir tras recibir daño especial.");
+        verificarAtributosConstantes(defensor);
+    }
 
-        assertEquals(atkInicial, defensor.getAttack(), "El Ataque no debe alterarse.");
-        assertEquals(defInicial, defensor.getDefense(), "La Defensa no debe alterarse.");
-        assertEquals(spAtkInicial, defensor.getSpAttack(), "El Ataque Especial no debe alterarse.");
-        assertEquals(spDefInicial, defensor.getSpDefense(), "La Defensa Especial no debe alterarse.");
-        assertEquals(spdInicial, defensor.getSpeed(), "La Velocidad no debe alterarse.");
-        assertEquals(tipoInicial, defensor.getType1(), "El Tipo no debe verse afectado por ataques.");
+    @Test
+    public void testAtributosDelAtacanteSeMantienenAlAtacar() {
+        int hpAtacanteAntes = atacante.getHp();
+        int atkAtacanteAntes = atacante.getAttack();
+        
+        atacante.useMove(0, defensor);
+        
+        assertEquals(hpAtacanteAntes, atacante.getHp(), "El HP del atacante no debe cambiar simplemente por atacar.");
+        assertEquals(atkAtacanteAntes, atacante.getAttack(), "El Ataque del atacante no debe agotarse ni cambiar tras atacar.");
+    }
+
+    private void verificarAtributosConstantes(Pokemon pokemon) {
+        assertEquals(atkInicial, pokemon.getAttack(), "El Ataque no debe cambiar.");
+        assertEquals(defInicial, pokemon.getDefense(), "La Defensa no debe cambiar.");
+        assertEquals(spAtkInicial, pokemon.getSpAttack(), "El Ataque Especial no debe cambiar.");
+        assertEquals(spDefInicial, pokemon.getSpDefense(), "La Defensa Especial no debe cambiar.");
+        assertEquals(spdInicial, pokemon.getSpeed(), "La Velocidad no debe cambiar.");
+        assertEquals(tipoInicial, pokemon.getType1(), "El Tipo principal no debe cambiar.");
     }
 }
