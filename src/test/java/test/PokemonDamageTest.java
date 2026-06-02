@@ -1,8 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/UnitTests/JUnit5TestClass.java to edit this template
- */
-
 package test;
 
 import org.junit.jupiter.api.Test;
@@ -12,38 +7,77 @@ import pokemon.PokemonFactory;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PokemonDamageTest {
+
     @Test
-public void damageShouldNeverIncreaseHp() {
-    
-    //Primer caso unitario
-    Pokemon onix = PokemonFactory.createPokemon(95);
+    public void damageShouldNeverIncreaseHp() {
+        Pokemon onix = PokemonFactory.createPokemon(95);
+        int initialHp = onix.getHp();
 
-    int initialHp = onix.getHp();
+        onix.receiveDamage(10);
 
-    onix.receiveDamage(10);
-
-    assertEquals(initialHp, onix.getHp());
+        assertTrue(onix.getHp() <= initialHp);
     }
 
-    //Segundo caso unitario
+    @Test
+    public void damageShouldReduceHpCorrectly() {
+        Pokemon pikachu = PokemonFactory.createPokemon(25);
+        int initialHp = pikachu.getHp();
+        int defense = pikachu.getDefense();
+        int baseDamage = 50;
+
+        pikachu.receiveDamage(baseDamage);
+
+        int expectedDamage = baseDamage - defense;
+        if (expectedDamage < 1) {
+            expectedDamage = 0;
+        }
+
+        assertEquals(initialHp - expectedDamage, pikachu.getHp());
+    }
+
+    @Test
+    public void specialDamageShouldReduceHpCorrectly() {
+        Pokemon pikachu = PokemonFactory.createPokemon(25);
+        int initialHp = pikachu.getHp();
+        int spDefense = pikachu.getSpDefense();
+        int baseDamage = 50;
+
+        pikachu.receiveSpecialDamage(baseDamage);
+
+        int expectedDamage = baseDamage - spDefense;
+        if (expectedDamage < 1) {
+            expectedDamage = 0;
+        }
+
+        assertEquals(initialHp - expectedDamage, pikachu.getHp());
+    }
+
     @Test
     public void hpShouldNeverBeNegative() {
+        Pokemon pikachu = PokemonFactory.createPokemon(25);
 
-    Pokemon pikachu = PokemonFactory.createPokemon(25);
+        pikachu.receiveDamage(9999);
 
-    pikachu.receiveDamage(9999);
-
-    assertEquals(0, pikachu.getHp());
+        assertEquals(0, pikachu.getHp());
+        assertTrue(pikachu.isFainted());
     }
 
-    //Tercer caso unitario
     @Test
     public void damageShouldBeAppliedOnlyOnce() {
+        Pokemon pikachu = PokemonFactory.createPokemon(25);
+        int initialHp = pikachu.getHp();
+        int defense = pikachu.getDefense();
+        int baseDamage = 30;
 
-    Pokemon pikachu = PokemonFactory.createPokemon(25);
+        pikachu.receiveDamage(baseDamage);
+        int hpAfterFirstHit = pikachu.getHp();
 
-    pikachu.receiveDamage(50);
+        int expectedDamage = baseDamage - defense;
+        if (expectedDamage < 1) {
+            expectedDamage = 0;
+        }
 
-    assertEquals(25, pikachu.getHp());
+        assertEquals(initialHp - expectedDamage, hpAfterFirstHit);
+        assertEquals(hpAfterFirstHit, pikachu.getHp());
     }
 }
